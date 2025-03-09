@@ -9,7 +9,7 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "predeploy": "npm run build",
-    "deploy": "gh-pages -b main -d build"
+    "deploy": "gh-pages -b main -d dist"
   },
   "homepage": "https://dahliarianna/.github.io/arisbooth",
   "dependencies": {
