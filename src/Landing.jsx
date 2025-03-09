@@ -16,9 +16,8 @@ import cherry from "./assets/cherry.png";
 import catSelect from "./assets/catSelect.png";
 import film from "./assets/film.png";
 import filmSelect from "./assets/filmSelect.png";
-
 import Capture from "./Capture";
-import Capture2 from "./Capture2";
+
 import StyleAndSave from "./StyleAndSave";
 import { useEffect } from "react";
 
