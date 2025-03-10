@@ -195,7 +195,7 @@ button:focus-visible {
   display: grid;
   grid-template-rows: 2fr 2fr 2fr 1fr;
   width: 175px;
-  height: auto;
+  height: 500px;
   /* max-height: 500px; */
   margin-left: 20px;
   z-index: 2;
@@ -248,14 +248,20 @@ button:focus-visible {
   object-fit: cover;
   display: block;
 } */
-.grid-item img {
+/* .grid-item img {
   width: 100%;
   height: auto;
   aspect-ratio: 3 / 4;
   object-fit: cover;
   display: block;
+} */
+.grid-item img {
+  width: 100%;
+  height: 100%;
+  aspect-ratio: auto;
+  object-fit: cover;
+  display: block;
 }
-
 .blank-item {
   /* background-color: #e8c1bd; */
   color: #3f373b;
