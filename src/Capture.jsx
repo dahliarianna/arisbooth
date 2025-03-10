@@ -76,15 +76,42 @@ const Capture = ({ capturedImages, setCapturedImages, selectedFrame }) => {
   //     }
   //   };
   // }, []);
+  // useEffect(() => {
+  //   const startCamera = async () => {
+  //     try {
+  //       const stream = await navigator.mediaDevices.getUserMedia({
+  //         video: true,
+  //       });
+  //       streamRef.current = stream;
+  //       if (videoRef.current) {
+  //         videoRef.current.srcObject = stream;
+  //       }
+  //     } catch (error) {
+  //       console.error("Error accessing camera:", error);
+  //     }
+  //   };
+
+  //   startCamera();
+
+  //   return () => {
+  //     if (streamRef.current) {
+  //       streamRef.current.getTracks().forEach((track) => track.stop());
+  //     }
+  //   };
+  // }, []);
   useEffect(() => {
     const startCamera = async () => {
       try {
         const stream = await navigator.mediaDevices.getUserMedia({
-          video: true,
+          video: { facingMode: "user" },
+          audio: false,
         });
+
         streamRef.current = stream;
         if (videoRef.current) {
           videoRef.current.srcObject = stream;
+          videoRef.current.setAttribute("playsinline", "true");
+          videoRef.current.play();
         }
       } catch (error) {
         console.error("Error accessing camera:", error);
