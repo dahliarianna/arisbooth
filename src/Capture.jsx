@@ -127,33 +127,57 @@ const Capture = ({ capturedImages, setCapturedImages, selectedFrame }) => {
     };
   }, []);
   // };
+  // const captureImage = () => {
+  //   if (!canvasRef.current || !videoRef.current) return;
+
+  //   const canvas = canvasRef.current;
+  //   const ctx = canvas.getContext("2d");
+
+  //   canvas.width = videoRef.current.videoWidth;
+  //   canvas.height = videoRef.current.videoHeight;
+
+  //   // Apply filter and flip (if enabled)
+  //   ctx.filter = filter;
+
+  //   if (flip) {
+  //     ctx.translate(canvas.width, 0);
+  //     ctx.scale(-1, 1);
+  //   }
+
+  //   ctx.drawImage(videoRef.current, 0, 0, canvas.width, canvas.height);
+
+  //   if (flip) {
+  //     ctx.setTransform(1, 0, 0, 1, 0, 0); // Reset transform
+  //   }
+
+  //   const imageUrl = canvas.toDataURL("image/png");
+  //   setCapturedImages((prevImages) => [...prevImages, imageUrl]);
+  //   console.log("✅ Image Captured!");
+  // };
   const captureImage = () => {
     if (!canvasRef.current || !videoRef.current) return;
 
     const canvas = canvasRef.current;
     const ctx = canvas.getContext("2d");
+    const video = videoRef.current;
 
-    canvas.width = videoRef.current.videoWidth;
-    canvas.height = videoRef.current.videoHeight;
+    let videoWidth = video.videoWidth;
+    let videoHeight = video.videoHeight;
 
-    // Apply filter and flip (if enabled)
+    if (videoWidth > videoHeight) {
+      [videoWidth, videoHeight] = [videoHeight, videoWidth];
+    }
+
+    canvas.width = videoWidth;
+    canvas.height = videoHeight;
+
     ctx.filter = filter;
-
-    if (flip) {
-      ctx.translate(canvas.width, 0);
-      ctx.scale(-1, 1);
-    }
-
-    ctx.drawImage(videoRef.current, 0, 0, canvas.width, canvas.height);
-
-    if (flip) {
-      ctx.setTransform(1, 0, 0, 1, 0, 0); // Reset transform
-    }
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
 
     const imageUrl = canvas.toDataURL("image/png");
     setCapturedImages((prevImages) => [...prevImages, imageUrl]);
-    console.log("✅ Image Captured!");
   };
+
   const captureImageWithCountdown = () => {
     let timeLeft = 3;
     setCountdown(timeLeft);
