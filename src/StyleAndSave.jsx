@@ -20,7 +20,7 @@ import cat3 from "./assets/cat3.png";
 import checkSticker from "./assets/checkSticker.png";
 import html2canvas from "html2canvas";
 import YouSure from "./youSure";
-
+import domtoimage from "dom-to-image-more";
 // import { useState, useEffect } from "react";
 function StyleAndSave({
   selectedFrame,
@@ -88,38 +88,30 @@ function StyleAndSave({
   //   link.download = "photo-strip.png";
   //   link.click();
   // };
-  const downloadPhotoStrip = async () => {
+  const downloadPhotoStrip = () => {
     const element =
       document.querySelector(".threeFrame") ||
       document.querySelector(".fourFrame");
 
     if (!element) return;
 
-    const computedStyle = window.getComputedStyle(element);
-    const appliedFilter = computedStyle.filter;
-
-    const canvas = await html2canvas(element, {
-      scale: 2,
-      useCORS: true,
-      logging: false,
-      backgroundColor: null,
-      onclone: (clonedDocument) => {
-        const clonedElement =
-          clonedDocument.querySelector(".threeFrame") ||
-          clonedDocument.querySelector(".fourFrame");
-
-        if (clonedElement) {
-          clonedElement.style.filter = appliedFilter;
-        }
-      },
-    });
-
-    const dataURL = canvas.toDataURL("image/png");
-
-    const link = document.createElement("a");
-    link.href = dataURL;
-    link.download = "photo-strip.png";
-    link.click();
+    domtoimage
+      .toPng(element, {
+        filter: (node) => {
+          return node.tagName !== "SCRIPT" && node.tagName !== "STYLE";
+        },
+        quality: 1,
+        bgcolor: null,
+      })
+      .then((dataUrl) => {
+        const link = document.createElement("a");
+        link.href = dataUrl;
+        link.download = "photo-strip.png";
+        link.click();
+      })
+      .catch((error) => {
+        console.error("Error capturing photo strip:", error);
+      });
   };
 
   return (
