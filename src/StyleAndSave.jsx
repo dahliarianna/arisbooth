@@ -62,6 +62,32 @@ function StyleAndSave({
     { cats: [catSelect, cat3, "color6"] },
   ];
 
+  // const downloadPhotoStrip = async () => {
+  //   const element =
+  //     document.querySelector(".threeFrame") ||
+  //     document.querySelector(".fourFrame");
+
+  //   if (!element) return;
+
+  //   const { width, height } = element.getBoundingClientRect();
+
+  //   const canvas = await html2canvas(element, {
+  //     scale: 2,
+  //     useCORS: true,
+  //     logging: false,
+  //     x: 0,
+  //     y: 0,
+  //     width: width,
+  //     height: height,
+  //   });
+
+  //   const dataURL = canvas.toDataURL("image/png");
+
+  //   const link = document.createElement("a");
+  //   link.href = dataURL;
+  //   link.download = "photo-strip.png";
+  //   link.click();
+  // };
   const downloadPhotoStrip = async () => {
     const element =
       document.querySelector(".threeFrame") ||
@@ -69,16 +95,23 @@ function StyleAndSave({
 
     if (!element) return;
 
-    const { width, height } = element.getBoundingClientRect();
+    const computedStyle = window.getComputedStyle(element);
+    const appliedFilter = computedStyle.filter;
 
     const canvas = await html2canvas(element, {
       scale: 2,
       useCORS: true,
       logging: false,
-      x: 0,
-      y: 0,
-      width: width,
-      height: height,
+      backgroundColor: null,
+      onclone: (clonedDocument) => {
+        const clonedElement =
+          clonedDocument.querySelector(".threeFrame") ||
+          clonedDocument.querySelector(".fourFrame");
+
+        if (clonedElement) {
+          clonedElement.style.filter = appliedFilter;
+        }
+      },
     });
 
     const dataURL = canvas.toDataURL("image/png");
