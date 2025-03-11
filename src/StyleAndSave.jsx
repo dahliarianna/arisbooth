@@ -151,7 +151,11 @@ function StyleAndSave({
                     <img
                       src={el}
                       alt={`Image ${index}`}
-                      // style={{ width: "100%", height: "100%" }}
+                      style={{
+                        width: "100%",
+                        height: "100%",
+                        objectFit: "cover",
+                      }}
                     />
                     {/* <img src={default2} alt="Test" /> */}
                   </div>
@@ -246,7 +250,11 @@ function StyleAndSave({
                     <img
                       src={el}
                       alt={`Image ${index}`}
-                      // style={{ width: "100%", height: "100%" }}
+                      style={{
+                        width: "100%",
+                        height: "100%",
+                        objectFit: "cover",
+                      }}
                     />
                     {/* <img src={default2} alt="Test" /> */}
                   </div>

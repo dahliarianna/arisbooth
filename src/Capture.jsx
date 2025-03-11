@@ -11,7 +11,7 @@ const Capture = ({ capturedImages, setCapturedImages, selectedFrame }) => {
   const [countdown, setCountdown] = useState(0);
   const [autoCaptureCount, setAutoCaptureCount] = useState(0);
   const [flash, setFlash] = useState(false);
-
+  console.log(`selected texture`, texture);
   const maxPhotos =
     selectedFrame === "threeFrame" ? 3 : selectedFrame === "fourFrame" ? 4 : 3;
   const startCountdown = () => {
@@ -154,6 +154,29 @@ const Capture = ({ capturedImages, setCapturedImages, selectedFrame }) => {
   //   setCapturedImages((prevImages) => [...prevImages, imageUrl]);
   //   console.log("✅ Image Captured!");
   // };
+  // const captureImage = () => {
+  //   if (!canvasRef.current || !videoRef.current) return;
+
+  //   const canvas = canvasRef.current;
+  //   const ctx = canvas.getContext("2d");
+  //   const video = videoRef.current;
+
+  //   let videoWidth = 119;
+  //   let videoHeight = 175;
+
+  //   if (videoWidth > videoHeight) {
+  //     [videoWidth, videoHeight] = [videoHeight, videoWidth];
+  //   }
+
+  //   canvas.width = videoWidth;
+  //   canvas.height = videoHeight;
+
+  //   ctx.filter = filter;
+  //   ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+  //   const imageUrl = canvas.toDataURL("image/png");
+  //   setCapturedImages((prevImages) => [...prevImages, imageUrl]);
+  // };
   const captureImage = () => {
     if (!canvasRef.current || !videoRef.current) return;
 
@@ -161,18 +184,32 @@ const Capture = ({ capturedImages, setCapturedImages, selectedFrame }) => {
     const ctx = canvas.getContext("2d");
     const video = videoRef.current;
 
-    let videoWidth = video.videoWidth;
-    let videoHeight = video.videoHeight;
+    const fixedWidth = 1200;
+    const fixedHeight = 816;
 
-    if (videoWidth > videoHeight) {
-      [videoWidth, videoHeight] = [videoHeight, videoWidth];
-    }
-
-    canvas.width = videoWidth;
-    canvas.height = videoHeight;
+    canvas.width = fixedWidth;
+    canvas.height = fixedHeight;
 
     ctx.filter = filter;
-    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+    const videoAspectRatio = video.videoWidth / video.videoHeight;
+    const canvasAspectRatio = fixedWidth / fixedHeight;
+
+    let drawWidth, drawHeight, offsetX, offsetY;
+
+    if (videoAspectRatio > canvasAspectRatio) {
+      drawHeight = fixedHeight;
+      drawWidth = video.videoWidth * (fixedHeight / video.videoHeight);
+      offsetX = (fixedWidth - drawWidth) / 2;
+      offsetY = 0;
+    } else {
+      drawWidth = fixedWidth;
+      drawHeight = video.videoHeight * (fixedWidth / video.videoWidth);
+      offsetX = 0;
+      offsetY = (fixedHeight - drawHeight) / 2;
+    }
+
+    ctx.drawImage(video, offsetX, offsetY, drawWidth, drawHeight);
 
     const imageUrl = canvas.toDataURL("image/png");
     setCapturedImages((prevImages) => [...prevImages, imageUrl]);
