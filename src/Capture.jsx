@@ -177,6 +177,46 @@ const Capture = ({ capturedImages, setCapturedImages, selectedFrame }) => {
   //   const imageUrl = canvas.toDataURL("image/png");
   //   setCapturedImages((prevImages) => [...prevImages, imageUrl]);
   // };
+  // const captureImage = () => {
+  //   if (!canvasRef.current || !videoRef.current) return;
+
+  //   const canvas = canvasRef.current;
+  //   const ctx = canvas.getContext("2d");
+  //   const video = videoRef.current;
+
+  //   const fixedWidth = 1200;
+  //   const fixedHeight = 816;
+
+  //   canvas.width = fixedWidth;
+  //   canvas.height = fixedHeight;
+  //   if (flip) {
+  //     ctx.translate(canvas.width, 0);
+  //     ctx.scale(-1, 1);
+  //   }
+  //   ctx.filter = filter;
+
+  //   const videoAspectRatio = video.videoWidth / video.videoHeight;
+  //   const canvasAspectRatio = fixedWidth / fixedHeight;
+
+  //   let drawWidth, drawHeight, offsetX, offsetY;
+
+  //   if (videoAspectRatio > canvasAspectRatio) {
+  //     drawHeight = fixedHeight;
+  //     drawWidth = video.videoWidth * (fixedHeight / video.videoHeight);
+  //     offsetX = (fixedWidth - drawWidth) / 2;
+  //     offsetY = 0;
+  //   } else {
+  //     drawWidth = fixedWidth;
+  //     drawHeight = video.videoHeight * (fixedWidth / video.videoWidth);
+  //     offsetX = 0;
+  //     offsetY = (fixedHeight - drawHeight) / 2;
+  //   }
+
+  //   ctx.drawImage(video, offsetX, offsetY, drawWidth, drawHeight);
+
+  //   const imageUrl = canvas.toDataURL("image/png");
+  //   setCapturedImages((prevImages) => [...prevImages, imageUrl]);
+  // };
   const captureImage = () => {
     if (!canvasRef.current || !videoRef.current) return;
 
@@ -190,7 +230,13 @@ const Capture = ({ capturedImages, setCapturedImages, selectedFrame }) => {
     canvas.width = fixedWidth;
     canvas.height = fixedHeight;
 
-    ctx.filter = filter;
+    if (flip) {
+      ctx.translate(canvas.width, 0);
+      ctx.scale(-1, 1);
+    }
+
+    const computedFilter = window.getComputedStyle(video).filter;
+    ctx.filter = computedFilter !== "none" ? computedFilter : filter;
 
     const videoAspectRatio = video.videoWidth / video.videoHeight;
     const canvasAspectRatio = fixedWidth / fixedHeight;
