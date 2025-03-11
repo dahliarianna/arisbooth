@@ -62,57 +62,57 @@ function StyleAndSave({
     { cats: [catSelect, cat3, "color6"] },
   ];
 
-  // const downloadPhotoStrip = async () => {
-  //   const element =
-  //     document.querySelector(".threeFrame") ||
-  //     document.querySelector(".fourFrame");
-
-  //   if (!element) return;
-
-  //   const { width, height } = element.getBoundingClientRect();
-
-  //   const canvas = await html2canvas(element, {
-  //     scale: 2,
-  //     useCORS: true,
-  //     logging: false,
-  //     x: 0,
-  //     y: 0,
-  //     width: width,
-  //     height: height,
-  //   });
-
-  //   const dataURL = canvas.toDataURL("image/png");
-
-  //   const link = document.createElement("a");
-  //   link.href = dataURL;
-  //   link.download = "photo-strip.png";
-  //   link.click();
-  // };
-  const downloadPhotoStrip = () => {
+  const downloadPhotoStrip = async () => {
     const element =
       document.querySelector(".threeFrame") ||
       document.querySelector(".fourFrame");
 
     if (!element) return;
 
-    domtoimage
-      .toPng(element, {
-        filter: (node) => {
-          return node.tagName !== "SCRIPT" && node.tagName !== "STYLE";
-        },
-        quality: 1,
-        bgcolor: null,
-      })
-      .then((dataUrl) => {
-        const link = document.createElement("a");
-        link.href = dataUrl;
-        link.download = "photo-strip.png";
-        link.click();
-      })
-      .catch((error) => {
-        console.error("Error capturing photo strip:", error);
-      });
+    const { width, height } = element.getBoundingClientRect();
+
+    const canvas = await html2canvas(element, {
+      scale: 2,
+      useCORS: true,
+      logging: false,
+      x: 0,
+      y: 0,
+      width: width,
+      height: height,
+    });
+
+    const dataURL = canvas.toDataURL("image/png");
+
+    const link = document.createElement("a");
+    link.href = dataURL;
+    link.download = "photo-strip.png";
+    link.click();
   };
+  // const downloadPhotoStrip = () => {
+  //   const element =
+  //     document.querySelector(".threeFrame") ||
+  //     document.querySelector(".fourFrame");
+
+  //   if (!element) return;
+
+  //   domtoimage
+  //     .toPng(element, {
+  //       filter: (node) => {
+  //         return node.tagName !== "SCRIPT" && node.tagName !== "STYLE";
+  //       },
+  //       quality: 1,
+  //       bgcolor: null,
+  //     })
+  //     .then((dataUrl) => {
+  //       const link = document.createElement("a");
+  //       link.href = dataUrl;
+  //       link.download = "photo-strip.png";
+  //       link.click();
+  //     })
+  //     .catch((error) => {
+  //       console.error("Error capturing photo strip:", error);
+  //     });
+  // };
 
   return (
     <div>
