@@ -192,6 +192,50 @@ const Capture = ({ capturedImages, setCapturedImages, selectedFrame }) => {
   //   const imageUrl = canvas.toDataURL("image/png");
   //   setCapturedImages((prevImages) => [...prevImages, imageUrl]);
   // };
+  // const captureImage = () => {
+  //   if (!canvasRef.current || !videoRef.current) return;
+
+  //   const canvas = canvasRef.current;
+  //   const ctx = canvas.getContext("2d");
+  //   const video = videoRef.current;
+
+  //   const fixedWidth = 1200;
+  //   const fixedHeight = 816;
+
+  //   canvas.width = fixedWidth;
+  //   canvas.height = fixedHeight;
+
+  //   if (flip) {
+  //     ctx.translate(canvas.width, 0);
+  //     ctx.scale(-1, 1);
+  //   }
+
+  //   ctx.filter = filter || "none";
+
+  //   const videoAspectRatio = video.videoWidth / video.videoHeight;
+  //   const canvasAspectRatio = fixedWidth / fixedHeight;
+
+  //   let drawWidth, drawHeight, offsetX, offsetY;
+
+  //   if (videoAspectRatio > canvasAspectRatio) {
+  //     drawHeight = fixedHeight;
+  //     drawWidth = video.videoWidth * (fixedHeight / video.videoHeight);
+  //     offsetX = (fixedWidth - drawWidth) / 2;
+  //     offsetY = 0;
+  //   } else {
+  //     drawWidth = fixedWidth;
+  //     drawHeight = video.videoHeight * (fixedWidth / video.videoWidth);
+  //     offsetX = 0;
+  //     offsetY = (fixedHeight - drawHeight) / 2;
+  //   }
+
+  //   ctx.drawImage(video, offsetX, offsetY, drawWidth, drawHeight);
+
+  //   setTimeout(() => {
+  //     const imageUrl = canvas.toDataURL("image/png");
+  //     setCapturedImages((prevImages) => [...prevImages, imageUrl]);
+  //   }, 100);
+  // };
   const captureImage = () => {
     if (!canvasRef.current || !videoRef.current) return;
 
@@ -210,32 +254,29 @@ const Capture = ({ capturedImages, setCapturedImages, selectedFrame }) => {
       ctx.scale(-1, 1);
     }
 
-    ctx.filter = filter || "none";
-
-    const videoAspectRatio = video.videoWidth / video.videoHeight;
-    const canvasAspectRatio = fixedWidth / fixedHeight;
-
-    let drawWidth, drawHeight, offsetX, offsetY;
-
-    if (videoAspectRatio > canvasAspectRatio) {
-      drawHeight = fixedHeight;
-      drawWidth = video.videoWidth * (fixedHeight / video.videoHeight);
-      offsetX = (fixedWidth - drawWidth) / 2;
-      offsetY = 0;
-    } else {
-      drawWidth = fixedWidth;
-      drawHeight = video.videoHeight * (fixedWidth / video.videoWidth);
-      offsetX = 0;
-      offsetY = (fixedHeight - drawHeight) / 2;
-    }
-
-    ctx.drawImage(video, offsetX, offsetY, drawWidth, drawHeight);
+    ctx.drawImage(video, 0, 0, fixedWidth, fixedHeight);
 
     setTimeout(() => {
-      const imageUrl = canvas.toDataURL("image/png");
-      setCapturedImages((prevImages) => [...prevImages, imageUrl]);
+      let rawImageUrl = canvas.toDataURL("image/png");
+
+      const filterCanvas = document.createElement("canvas");
+      const filterCtx = filterCanvas.getContext("2d");
+
+      filterCanvas.width = fixedWidth;
+      filterCanvas.height = fixedHeight;
+
+      let img = new Image();
+      img.src = rawImageUrl;
+      img.onload = () => {
+        filterCtx.filter = filter || "none";
+        filterCtx.drawImage(img, 0, 0, fixedWidth, fixedHeight);
+
+        const finalImageUrl = filterCanvas.toDataURL("image/png");
+        setCapturedImages((prevImages) => [...prevImages, finalImageUrl]);
+      };
     }, 100);
   };
+
   const captureImageWithCountdown = () => {
     let timeLeft = 3;
     setCountdown(timeLeft);
