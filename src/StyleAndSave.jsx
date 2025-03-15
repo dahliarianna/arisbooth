@@ -183,6 +183,7 @@ function StyleAndSave({
   //       console.error("Download failed:", error);
   //     });
   // };
+
   const downloadPhotoStrip = async () => {
     const element =
       document.querySelector(".threeFrame") ||
@@ -194,17 +195,18 @@ function StyleAndSave({
     }
 
     try {
+      const scale = window.devicePixelRatio || 2;
       const options = {
         quality: 1,
-        width: element.offsetWidth * 3,
-        height: element.offsetHeight * 3,
+        width: element.offsetWidth * scale,
+        height: element.offsetHeight * scale,
         style: {
-          transform: "scale(3)",
+          transform: `scale(${scale})`,
           transformOrigin: "top left",
         },
         filter: (node) => {
           if (node.tagName === "IMG") {
-            node.crossOrigin = "anonymous"; // Fixes CORS issues
+            node.crossOrigin = "anonymous";
           }
           return true;
         },
@@ -213,18 +215,24 @@ function StyleAndSave({
 
       const dataURL = await domtoimage.toPng(element, options);
 
-      const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
-      if (isIOS) {
+      // Convert to Blob for Safari compatibility
+      const blob = await fetch(dataURL).then((res) => res.blob());
+      const blobURL = URL.createObjectURL(blob);
+
+      const link = document.createElement("a");
+      link.href = blobURL;
+      link.download = "photo-strip.png";
+
+      if (/iPhone|iPad|iPod/.test(navigator.userAgent)) {
         const newTab = window.open();
-        newTab.document.write(`<img src="${dataURL}" style="width:100%">`);
+        newTab.document.write(`<img src="${blobURL}" style="width:100%">`);
       } else {
-        const link = document.createElement("a");
-        link.href = dataURL;
-        link.download = "photo-strip.png";
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
       }
+
+      URL.revokeObjectURL(blobURL);
     } catch (error) {
       console.error("Download failed:", error);
     }
