@@ -140,48 +140,94 @@ function StyleAndSave({
   //   link.download = "photo-strip.png";
   //   link.click();
   // };
+  // const downloadPhotoStrip = async () => {
+  //   const element =
+  //     document.querySelector(".threeFrame") ||
+  //     document.querySelector(".fourFrame");
+
+  //   if (!element) return;
+
+  //   const options = {
+  //     quality: 1,
+  //     width: element.offsetWidth * 3,
+  //     height: element.offsetHeight * 3,
+  //     style: {
+  //       transform: "scale(3)",
+  //       transformOrigin: "top left",
+  //     },
+  //     useCORS: true,
+  //     imagePlaceholder: "",
+  //     filter: (node) => {
+  //       if (node.tagName === "IMG") {
+  //         node.crossOrigin = "anonymous";
+  //       }
+  //       return true;
+  //     },
+  //     filter: (node) => {
+  //       if (node.tagName === "IMG") {
+  //         node.crossOrigin = "anonymous";
+  //       }
+  //       return true;
+  //     },
+  //   };
+
+  //   domtoimage
+  //     .toPng(element, options)
+  //     .then((dataURL) => {
+  //       const link = document.createElement("a");
+  //       link.href = dataURL;
+  //       link.download = "photo-strip.png";
+  //       link.click();
+  //     })
+  //     .catch((error) => {
+  //       console.error("Download failed:", error);
+  //     });
+  // };
   const downloadPhotoStrip = async () => {
     const element =
       document.querySelector(".threeFrame") ||
       document.querySelector(".fourFrame");
 
-    if (!element) return;
+    if (!element) {
+      console.error("Element not found!");
+      return;
+    }
 
-    const options = {
-      quality: 1,
-      width: element.offsetWidth * 3,
-      height: element.offsetHeight * 3,
-      style: {
-        transform: "scale(3)",
-        transformOrigin: "top left",
-      },
-      useCORS: true,
-      imagePlaceholder: "",
-      filter: (node) => {
-        if (node.tagName === "IMG") {
-          node.crossOrigin = "anonymous";
-        }
-        return true;
-      },
-      filter: (node) => {
-        if (node.tagName === "IMG") {
-          node.crossOrigin = "anonymous";
-        }
-        return true;
-      },
-    };
+    try {
+      const options = {
+        quality: 1,
+        width: element.offsetWidth * 3,
+        height: element.offsetHeight * 3,
+        style: {
+          transform: "scale(3)",
+          transformOrigin: "top left",
+        },
+        filter: (node) => {
+          if (node.tagName === "IMG") {
+            node.crossOrigin = "anonymous"; // Fixes CORS issues
+          }
+          return true;
+        },
+        useCORS: true,
+      };
 
-    domtoimage
-      .toPng(element, options)
-      .then((dataURL) => {
+      const dataURL = await domtoimage.toPng(element, options);
+
+      const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
+      if (isIOS) {
+        const newTab = window.open();
+        newTab.document.write(`<img src="${dataURL}" style="width:100%">`);
+      } else {
         const link = document.createElement("a");
         link.href = dataURL;
         link.download = "photo-strip.png";
+        document.body.appendChild(link);
         link.click();
-      })
-      .catch((error) => {
-        console.error("Download failed:", error);
-      });
+        document.body.removeChild(link);
+      }
+    } catch (error) {
+      console.error("Download failed:", error);
+    }
   };
 
   return (
