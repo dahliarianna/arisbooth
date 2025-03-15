@@ -30,7 +30,75 @@ const Capture = ({ capturedImages, setCapturedImages, selectedFrame }) => {
   };
 
   console.log(`captured`, capturedImages);
+  // const captureImage = () => {
+  //   const video = videoRef.current;
+  //   const canvas = canvasRef.current;
+  //   const ctx = canvas.getContext("2d");
 
+  //   // Set canvas size to match video
+  //   canvas.width = video.videoWidth;
+  //   canvas.height = video.videoHeight;
+
+  //   // Apply filter before capturing
+  //   ctx.filter = filter;
+  //   ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+  //   // Convert to image URL
+  //   const imageUrl = canvas.toDataURL("image/png");
+
+  //   // Add to the photo strip
+  //   setCapturedImages((prev) => [...prev, imageUrl]);
+  // };
+
+  // useEffect(() => {
+  //   navigator.mediaDevices
+  //     .getUserMedia({ video: true })
+  //     .then((stream) => {
+  //       if (videoRef.current) {
+  //         videoRef.current.srcObject = stream;
+  //       }
+  //     })
+  //     .catch((err) => console.error("Error accessing webcam:", err));
+  // }, []);
+  // useEffect(() => {
+  //   // Access the webcam
+  //   navigator.mediaDevices
+  //     .getUserMedia({ video: true })
+  //     .then((stream) => {
+  //       if (videoRef.current) {
+  //         videoRef.current.srcObject = stream;
+  //       }
+  //     })
+  //     .catch((err) => console.error("Error accessing webcam:", err));
+  //   return () => {
+  //     if (streamRef.current) {
+  //       streamRef.current.getTracks().forEach((track) => track.stop());
+  //     }
+  //   };
+  // }, []);
+  // useEffect(() => {
+  //   const startCamera = async () => {
+  //     try {
+  //       const stream = await navigator.mediaDevices.getUserMedia({
+  //         video: true,
+  //       });
+  //       streamRef.current = stream;
+  //       if (videoRef.current) {
+  //         videoRef.current.srcObject = stream;
+  //       }
+  //     } catch (error) {
+  //       console.error("Error accessing camera:", error);
+  //     }
+  //   };
+
+  //   startCamera();
+
+  //   return () => {
+  //     if (streamRef.current) {
+  //       streamRef.current.getTracks().forEach((track) => track.stop());
+  //     }
+  //   };
+  // }, []);
   useEffect(() => {
     const startCamera = async () => {
       try {
@@ -192,50 +260,6 @@ const Capture = ({ capturedImages, setCapturedImages, selectedFrame }) => {
   //   const imageUrl = canvas.toDataURL("image/png");
   //   setCapturedImages((prevImages) => [...prevImages, imageUrl]);
   // };
-  // const captureImage = () => {
-  //   if (!canvasRef.current || !videoRef.current) return;
-
-  //   const canvas = canvasRef.current;
-  //   const ctx = canvas.getContext("2d");
-  //   const video = videoRef.current;
-
-  //   const fixedWidth = 1200;
-  //   const fixedHeight = 816;
-
-  //   canvas.width = fixedWidth;
-  //   canvas.height = fixedHeight;
-
-  //   if (flip) {
-  //     ctx.translate(canvas.width, 0);
-  //     ctx.scale(-1, 1);
-  //   }
-
-  //   ctx.filter = filter || "none";
-
-  //   const videoAspectRatio = video.videoWidth / video.videoHeight;
-  //   const canvasAspectRatio = fixedWidth / fixedHeight;
-
-  //   let drawWidth, drawHeight, offsetX, offsetY;
-
-  //   if (videoAspectRatio > canvasAspectRatio) {
-  //     drawHeight = fixedHeight;
-  //     drawWidth = video.videoWidth * (fixedHeight / video.videoHeight);
-  //     offsetX = (fixedWidth - drawWidth) / 2;
-  //     offsetY = 0;
-  //   } else {
-  //     drawWidth = fixedWidth;
-  //     drawHeight = video.videoHeight * (fixedWidth / video.videoWidth);
-  //     offsetX = 0;
-  //     offsetY = (fixedHeight - drawHeight) / 2;
-  //   }
-
-  //   ctx.drawImage(video, offsetX, offsetY, drawWidth, drawHeight);
-
-  //   setTimeout(() => {
-  //     const imageUrl = canvas.toDataURL("image/png");
-  //     setCapturedImages((prevImages) => [...prevImages, imageUrl]);
-  //   }, 100);
-  // };
   const captureImage = () => {
     if (!canvasRef.current || !videoRef.current) return;
 
@@ -254,20 +278,32 @@ const Capture = ({ capturedImages, setCapturedImages, selectedFrame }) => {
       ctx.scale(-1, 1);
     }
 
-    // Capture image without filters
-    ctx.drawImage(video, 0, 0, fixedWidth, fixedHeight);
+    ctx.filter = filter || "none";
+
+    const videoAspectRatio = video.videoWidth / video.videoHeight;
+    const canvasAspectRatio = fixedWidth / fixedHeight;
+
+    let drawWidth, drawHeight, offsetX, offsetY;
+
+    if (videoAspectRatio > canvasAspectRatio) {
+      drawHeight = fixedHeight;
+      drawWidth = video.videoWidth * (fixedHeight / video.videoHeight);
+      offsetX = (fixedWidth - drawWidth) / 2;
+      offsetY = 0;
+    } else {
+      drawWidth = fixedWidth;
+      drawHeight = video.videoHeight * (fixedWidth / video.videoWidth);
+      offsetX = 0;
+      offsetY = (fixedHeight - drawHeight) / 2;
+    }
+
+    ctx.drawImage(video, offsetX, offsetY, drawWidth, drawHeight);
 
     setTimeout(() => {
       const imageUrl = canvas.toDataURL("image/png");
-
-      // Store the image along with the current filter
-      setCapturedImages((prevImages) => [
-        ...prevImages,
-        { url: imageUrl, filter: filter },
-      ]);
+      setCapturedImages((prevImages) => [...prevImages, imageUrl]);
     }, 100);
   };
-
   const captureImageWithCountdown = () => {
     let timeLeft = 3;
     setCountdown(timeLeft);
@@ -366,25 +402,6 @@ const Capture = ({ capturedImages, setCapturedImages, selectedFrame }) => {
           )}
         </div>
       </div>
-      {/* {capturedImages?.length &&
-        capturedImages.map((el) => (
-          <img
-            src={el}
-            style={{ width: "20px", height: "20px", imagefit: "cover" }}
-          />
-        ))} */}
-      {/* <div className="capturedImagesContainer">
-        {capturedImages.map((img, index) => (
-          <img
-            key={index}
-            src={img.url}
-            alt="Captured"
-            style={{
-              filter: img.filter || "none",
-            }}
-          />
-        ))}
-      </div> */}
 
       <div className="filterButtons">
         <button

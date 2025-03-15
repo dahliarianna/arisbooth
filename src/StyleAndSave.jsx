@@ -63,185 +63,77 @@ function StyleAndSave({
     { cats: [catSelect, cat3, "color6"] },
   ];
 
-  // const downloadPhotoStrip = async () => {
-  //   const element =
-  //     document.querySelector(".threeFrame") ||
-  //     document.querySelector(".fourFrame");
-
-  //   if (!element) return;
-
-  //   const { width, height } = element.getBoundingClientRect();
-
-  //   const canvas = await html2canvas(element, {
-  //     scale: 2,
-  //     useCORS: true,
-  //     logging: false,
-  //     x: 0,
-  //     y: 0,
-  //     width: width,
-  //     height: height,
-  //   });
-
-  //   const dataURL = canvas.toDataURL("image/png");
-
-  //   const link = document.createElement("a");
-  //   link.href = dataURL;
-  //   link.download = "photo-strip.png";
-  //   link.click();
-  // };
-  // const downloadPhotoStrip = async () => {
-  //   const element =
-  //     document.querySelector(".threeFrame") ||
-  //     document.querySelector(".fourFrame");
-
-  //   if (!element) return;
-
-  //   const canvas = await html2canvas(element, {
-  //     scale: 2,
-  //     useCORS: true,
-  //     backgroundColor: null,
-  //     logging: false,
-  //   });
-
-  //   const dataURL = canvas.toDataURL("image/png");
-
-  //   const link = document.createElement("a");
-  //   link.href = dataURL;
-  //   link.download = "photo-strip.png";
-  //   link.click();
-  // };
-  // const downloadPhotoStrip = async () => {
-  //   const element =
-  //     document.querySelector(".threeFrame") ||
-  //     document.querySelector(".fourFrame");
-
-  //   if (!element) return;
-
-  //   const { width, height } = element.getBoundingClientRect();
-
-  //   const canvas = await html2canvas(element, {
-  //     scale: 3, // Increases resolution
-  //     useCORS: true, // Ensures images load properly
-  //     backgroundColor: null, // Keeps transparent background
-  //     logging: false,
-  //     width: width, // Keeps original width
-  //     height: height, // Keeps original height
-  //   });
-
-  //   const ctx = canvas.getContext("2d");
-
-  //   // Manually apply filters if needed
-  //   ctx.filter = "none";
-
-  //   const dataURL = canvas.toDataURL("image/png", 1.0); // Max quality
-
-  //   const link = document.createElement("a");
-  //   link.href = dataURL;
-  //   link.download = "photo-strip.png";
-  //   link.click();
-  // };
-  // const downloadPhotoStrip = async () => {
-  //   const element =
-  //     document.querySelector(".threeFrame") ||
-  //     document.querySelector(".fourFrame");
-
-  //   if (!element) return;
-
-  //   const options = {
-  //     quality: 1,
-  //     width: element.offsetWidth * 3,
-  //     height: element.offsetHeight * 3,
-  //     style: {
-  //       transform: "scale(3)",
-  //       transformOrigin: "top left",
-  //     },
-  //     useCORS: true,
-  //     imagePlaceholder: "",
-  //     filter: (node) => {
-  //       if (node.tagName === "IMG") {
-  //         node.crossOrigin = "anonymous";
-  //       }
-  //       return true;
-  //     },
-  //     filter: (node) => {
-  //       if (node.tagName === "IMG") {
-  //         node.crossOrigin = "anonymous";
-  //       }
-  //       return true;
-  //     },
-  //   };
-
-  //   domtoimage
-  //     .toPng(element, options)
-  //     .then((dataURL) => {
-  //       const link = document.createElement("a");
-  //       link.href = dataURL;
-  //       link.download = "photo-strip.png";
-  //       link.click();
-  //     })
-  //     .catch((error) => {
-  //       console.error("Download failed:", error);
-  //     });
-  // };
-
   const downloadPhotoStrip = async () => {
     const element =
       document.querySelector(".threeFrame") ||
       document.querySelector(".fourFrame");
 
-    if (!element) {
-      console.error("Element not found!");
-      return;
-    }
+    if (!element) return;
 
-    try {
-      const scale = window.devicePixelRatio || 2;
-      const options = {
-        quality: 1,
-        width: element.offsetWidth * scale,
-        height: element.offsetHeight * scale,
-        style: {
-          transform: `scale(${scale})`,
-          transformOrigin: "top left",
-        },
-        filter: (node) => {
-          if (node.tagName === "IMG") {
-            node.crossOrigin = "anonymous";
-          }
-          return true;
-        },
-        useCORS: true,
-      };
+    const { width, height } = element.getBoundingClientRect();
 
-      const dataURL = await domtoimage.toPng(element, options);
+    const canvas = await html2canvas(element, {
+      scale: 2,
+      useCORS: true,
+      logging: false,
+      x: 0,
+      y: 0,
+      width: width,
+      height: height,
+    });
 
-      // Convert to Blob for Safari compatibility
-      const blob = await fetch(dataURL).then((res) => res.blob());
-      const blobURL = URL.createObjectURL(blob);
+    const dataURL = canvas.toDataURL("image/png");
 
-      const link = document.createElement("a");
-      link.href = blobURL;
-      link.download = "photo-strip.png";
-
-      if (/iPhone|iPad|iPod/.test(navigator.userAgent)) {
-        const newTab = window.open();
-        newTab.document.write(`<img src="${blobURL}" style="width:100%">`);
-      } else {
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-      }
-
-      URL.revokeObjectURL(blobURL);
-    } catch (error) {
-      console.error("Download failed:", error);
-    }
+    const link = document.createElement("a");
+    link.href = dataURL;
+    link.download = "photo-strip.png";
+    link.click();
   };
+  // const downloadPhotoStrip = () => {
+  //   const element =
+  //     document.querySelector(".threeFrame") ||
+  //     document.querySelector(".fourFrame");
+
+  //   if (!element) return;
+
+  //   domtoimage
+  //     .toPng(element, {
+  //       filter: (node) => {
+  //         return node.tagName !== "SCRIPT" && node.tagName !== "STYLE";
+  //       },
+  //       quality: 1,
+  //       bgcolor: null,
+  //     })
+  //     .then((dataUrl) => {
+  //       const link = document.createElement("a");
+  //       link.href = dataUrl;
+  //       link.download = "photo-strip.png";
+  //       link.click();
+  //     })
+  //     .catch((error) => {
+  //       console.error("Error capturing photo strip:", error);
+  //     });
+  // };
 
   return (
     <div>
       {selectedFrame === "threeFrame" && (
         <div className="chooseFrame">
+          {/* <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                height: "100%",
+                justifyContent: "center",
+              }}
+            >
+              <button
+                className="backButton"
+                onClick={() => setSelectedFrame(null)}
+              >
+                back
+              </button>
+            </div> */}
           <div className="chooseColor">
             {colors.map((obj) => {
               const key = Object.keys(obj)[0];
@@ -277,7 +169,6 @@ function StyleAndSave({
                       src={el}
                       alt={`Image ${index}`}
                       style={{ width: "100%", height: "100%" }}
-                      crossOrigin="anonymous"
                     />
                   </div>
                 ))
@@ -291,7 +182,6 @@ function StyleAndSave({
                         height: "100%",
                         objectFit: "cover",
                       }}
-                      crossOrigin="anonymous"
                     />
                     {/* <img src={default2} alt="Test" /> */}
                   </div>
@@ -378,28 +268,19 @@ function StyleAndSave({
                       src={el}
                       alt={`Image ${index}`}
                       style={{ width: "100%", height: "100%" }}
-                      crossOrigin="anonymous"
                     />
                   </div>
                 ))
               : capturedImages.map((el, index) => (
                   <div className="grid-item" key={index}>
                     <img
-                      // src={el}
-                      // alt={`Image ${index}`}
-                      // style={{
-                      //   width: "100%",
-                      //   height: "100%",
-                      //   objectFit: "cover",
-                      // }}
-                      src={el.url}
+                      src={el}
                       alt={`Image ${index}`}
                       style={{
-                        filter: el.filter || "none",
                         width: "100%",
                         height: "100%",
+                        objectFit: "cover",
                       }}
-                      crossOrigin="anonymous"
                     />
                     {/* <img src={default2} alt="Test" /> */}
                   </div>
