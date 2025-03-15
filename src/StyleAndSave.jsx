@@ -155,6 +155,14 @@ function StyleAndSave({
         transform: "scale(3)",
         transformOrigin: "top left",
       },
+      useCORS: true,
+      imagePlaceholder: "",
+      filter: (node) => {
+        if (node.tagName === "IMG") {
+          node.crossOrigin = "anonymous";
+        }
+        return true;
+      },
       filter: (node) => {
         if (node.tagName === "IMG") {
           node.crossOrigin = "anonymous";
@@ -215,6 +223,7 @@ function StyleAndSave({
                       src={el}
                       alt={`Image ${index}`}
                       style={{ width: "100%", height: "100%" }}
+                      crossOrigin="anonymous"
                     />
                   </div>
                 ))
@@ -228,6 +237,7 @@ function StyleAndSave({
                         height: "100%",
                         objectFit: "cover",
                       }}
+                      crossOrigin="anonymous"
                     />
                     {/* <img src={default2} alt="Test" /> */}
                   </div>
@@ -314,6 +324,7 @@ function StyleAndSave({
                       src={el}
                       alt={`Image ${index}`}
                       style={{ width: "100%", height: "100%" }}
+                      crossOrigin="anonymous"
                     />
                   </div>
                 ))
@@ -334,6 +345,7 @@ function StyleAndSave({
                         width: "100%",
                         height: "100%",
                       }}
+                      crossOrigin="anonymous"
                     />
                     {/* <img src={default2} alt="Test" /> */}
                   </div>
