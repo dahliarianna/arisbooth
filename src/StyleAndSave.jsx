@@ -44,7 +44,7 @@ function StyleAndSave({
     { color2: "#a8798a" },
     { color4: "#5d7ca9" },
     { color3: "#7e9373" },
-    { color6: "#dfc568" },
+    { color7: "#dfc568" },
     { color5: "#1b1b1b" },
   ];
   const decors = [
@@ -63,6 +63,83 @@ function StyleAndSave({
     { cats: [catSelect, cat3, "color6"] },
   ];
 
+  // const downloadPhotoStrip = async () => {
+  //   const element =
+  //     document.querySelector(".threeFrame") ||
+  //     document.querySelector(".fourFrame");
+
+  //   if (!element) return;
+
+  //   const { width, height } = element.getBoundingClientRect();
+
+  //   const canvas = await html2canvas(element, {
+  //     scale: 2,
+  //     useCORS: true,
+  //     logging: false,
+  //     x: 0,
+  //     y: 0,
+  //     width: width,
+  //     height: height,
+  //   });
+
+  //   const dataURL = canvas.toDataURL("image/png");
+
+  //   const link = document.createElement("a");
+  //   link.href = dataURL;
+  //   link.download = "photo-strip.png";
+  //   link.click();
+  // };
+  // const downloadPhotoStrip = async () => {
+  //   const element =
+  //     document.querySelector(".threeFrame") ||
+  //     document.querySelector(".fourFrame");
+
+  //   if (!element) return;
+
+  //   const canvas = await html2canvas(element, {
+  //     scale: 2,
+  //     useCORS: true,
+  //     backgroundColor: null,
+  //     logging: false,
+  //   });
+
+  //   const dataURL = canvas.toDataURL("image/png");
+
+  //   const link = document.createElement("a");
+  //   link.href = dataURL;
+  //   link.download = "photo-strip.png";
+  //   link.click();
+  // };
+  // const downloadPhotoStrip = async () => {
+  //   const element =
+  //     document.querySelector(".threeFrame") ||
+  //     document.querySelector(".fourFrame");
+
+  //   if (!element) return;
+
+  //   const { width, height } = element.getBoundingClientRect();
+
+  //   const canvas = await html2canvas(element, {
+  //     scale: 3, // Increases resolution
+  //     useCORS: true, // Ensures images load properly
+  //     backgroundColor: null, // Keeps transparent background
+  //     logging: false,
+  //     width: width, // Keeps original width
+  //     height: height, // Keeps original height
+  //   });
+
+  //   const ctx = canvas.getContext("2d");
+
+  //   // Manually apply filters if needed
+  //   ctx.filter = "none";
+
+  //   const dataURL = canvas.toDataURL("image/png", 1.0); // Max quality
+
+  //   const link = document.createElement("a");
+  //   link.href = dataURL;
+  //   link.download = "photo-strip.png";
+  //   link.click();
+  // };
   const downloadPhotoStrip = async () => {
     const element =
       document.querySelector(".threeFrame") ||
@@ -70,70 +147,39 @@ function StyleAndSave({
 
     if (!element) return;
 
-    const { width, height } = element.getBoundingClientRect();
+    const options = {
+      quality: 1,
+      width: element.offsetWidth * 3,
+      height: element.offsetHeight * 3,
+      style: {
+        transform: "scale(3)",
+        transformOrigin: "top left",
+      },
+      filter: (node) => {
+        if (node.tagName === "IMG") {
+          node.crossOrigin = "anonymous";
+        }
+        return true;
+      },
+    };
 
-    const canvas = await html2canvas(element, {
-      scale: 2,
-      useCORS: true,
-      logging: false,
-      x: 0,
-      y: 0,
-      width: width,
-      height: height,
-    });
-
-    const dataURL = canvas.toDataURL("image/png");
-
-    const link = document.createElement("a");
-    link.href = dataURL;
-    link.download = "photo-strip.png";
-    link.click();
+    domtoimage
+      .toPng(element, options)
+      .then((dataURL) => {
+        const link = document.createElement("a");
+        link.href = dataURL;
+        link.download = "photo-strip.png";
+        link.click();
+      })
+      .catch((error) => {
+        console.error("Download failed:", error);
+      });
   };
-  // const downloadPhotoStrip = () => {
-  //   const element =
-  //     document.querySelector(".threeFrame") ||
-  //     document.querySelector(".fourFrame");
-
-  //   if (!element) return;
-
-  //   domtoimage
-  //     .toPng(element, {
-  //       filter: (node) => {
-  //         return node.tagName !== "SCRIPT" && node.tagName !== "STYLE";
-  //       },
-  //       quality: 1,
-  //       bgcolor: null,
-  //     })
-  //     .then((dataUrl) => {
-  //       const link = document.createElement("a");
-  //       link.href = dataUrl;
-  //       link.download = "photo-strip.png";
-  //       link.click();
-  //     })
-  //     .catch((error) => {
-  //       console.error("Error capturing photo strip:", error);
-  //     });
-  // };
 
   return (
     <div>
       {selectedFrame === "threeFrame" && (
         <div className="chooseFrame">
-          {/* <div
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                height: "100%",
-                justifyContent: "center",
-              }}
-            >
-              <button
-                className="backButton"
-                onClick={() => setSelectedFrame(null)}
-              >
-                back
-              </button>
-            </div> */}
           <div className="chooseColor">
             {colors.map((obj) => {
               const key = Object.keys(obj)[0];
@@ -274,12 +320,19 @@ function StyleAndSave({
               : capturedImages.map((el, index) => (
                   <div className="grid-item" key={index}>
                     <img
-                      src={el}
+                      // src={el}
+                      // alt={`Image ${index}`}
+                      // style={{
+                      //   width: "100%",
+                      //   height: "100%",
+                      //   objectFit: "cover",
+                      // }}
+                      src={el.url}
                       alt={`Image ${index}`}
                       style={{
+                        filter: el.filter || "none",
                         width: "100%",
                         height: "100%",
-                        objectFit: "cover",
                       }}
                     />
                     {/* <img src={default2} alt="Test" /> */}

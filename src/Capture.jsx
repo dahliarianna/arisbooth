@@ -373,7 +373,7 @@ const Capture = ({ capturedImages, setCapturedImages, selectedFrame }) => {
             style={{ width: "20px", height: "20px", imagefit: "cover" }}
           />
         ))} */}
-      <div className="capturedImagesContainer">
+      {/* <div className="capturedImagesContainer">
         {capturedImages.map((img, index) => (
           <img
             key={index}
@@ -381,13 +381,10 @@ const Capture = ({ capturedImages, setCapturedImages, selectedFrame }) => {
             alt="Captured"
             style={{
               filter: img.filter || "none",
-              width: "20px",
-              height: "20px",
-              imagefit: "cover",
             }}
           />
         ))}
-      </div>
+      </div> */}
 
       <div className="filterButtons">
         <button
