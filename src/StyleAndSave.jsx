@@ -44,7 +44,8 @@ function StyleAndSave({
     { color2: "#a8798a" },
     { color4: "#5d7ca9" },
     { color3: "#7e9373" },
-    { color5: "#edc8a5" },
+    { color6: "#dfc568" },
+    { color5: "#1b1b1b" },
   ];
   const decors = [
     { hearts: [heartSelect, hearts, "color4"] },

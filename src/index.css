@@ -672,9 +672,9 @@ button:focus-visible {
     /* top: 0;
     left: 0; */
     /* border-radius: 3px; */
-    border-radius: 2% 1% 4% 3%;
-    border: 1px solid black;
-    /* box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.3); */
+    /* border-radius: 2% 1% 4% 3%; */
+    border: 1px solid;
+    border-color: black;
   }
 }
 .centerContainer {
@@ -701,6 +701,7 @@ button:focus-visible {
   width: 100%;
   height: 100%;
   pointer-events: none;
+  border-radius: 2% 1% 4% 3% !important;
 }
 
 .modeSelector {
@@ -728,9 +729,10 @@ button:focus-visible {
   /* top: 0;
   left: 0; */
   /* border-radius: 3px; */
-  border-radius: 2% 1% 4% 3%;
-  border: 1px solid black;
-  /* box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.3); */
+  /* border-radius: 2% 1% 4% 3%; */
+  /* border: 1px solid black; */
+  border: 1px solid;
+  border-color: black;
 }
 .buttonColumn {
   display: flex;
@@ -764,7 +766,7 @@ button:focus-visible {
   height: 30px;
   /* border-radius: 50%; */
   border-radius: 42% 79% 54% 43% / 46% 44% 55% 52%;
-  background-color: black;
+  background-color: #dfc568;
 }
 .filterButtons {
   /* position: absolute;
