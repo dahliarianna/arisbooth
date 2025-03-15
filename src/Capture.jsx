@@ -30,75 +30,7 @@ const Capture = ({ capturedImages, setCapturedImages, selectedFrame }) => {
   };
 
   console.log(`captured`, capturedImages);
-  // const captureImage = () => {
-  //   const video = videoRef.current;
-  //   const canvas = canvasRef.current;
-  //   const ctx = canvas.getContext("2d");
 
-  //   // Set canvas size to match video
-  //   canvas.width = video.videoWidth;
-  //   canvas.height = video.videoHeight;
-
-  //   // Apply filter before capturing
-  //   ctx.filter = filter;
-  //   ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-
-  //   // Convert to image URL
-  //   const imageUrl = canvas.toDataURL("image/png");
-
-  //   // Add to the photo strip
-  //   setCapturedImages((prev) => [...prev, imageUrl]);
-  // };
-
-  // useEffect(() => {
-  //   navigator.mediaDevices
-  //     .getUserMedia({ video: true })
-  //     .then((stream) => {
-  //       if (videoRef.current) {
-  //         videoRef.current.srcObject = stream;
-  //       }
-  //     })
-  //     .catch((err) => console.error("Error accessing webcam:", err));
-  // }, []);
-  // useEffect(() => {
-  //   // Access the webcam
-  //   navigator.mediaDevices
-  //     .getUserMedia({ video: true })
-  //     .then((stream) => {
-  //       if (videoRef.current) {
-  //         videoRef.current.srcObject = stream;
-  //       }
-  //     })
-  //     .catch((err) => console.error("Error accessing webcam:", err));
-  //   return () => {
-  //     if (streamRef.current) {
-  //       streamRef.current.getTracks().forEach((track) => track.stop());
-  //     }
-  //   };
-  // }, []);
-  // useEffect(() => {
-  //   const startCamera = async () => {
-  //     try {
-  //       const stream = await navigator.mediaDevices.getUserMedia({
-  //         video: true,
-  //       });
-  //       streamRef.current = stream;
-  //       if (videoRef.current) {
-  //         videoRef.current.srcObject = stream;
-  //       }
-  //     } catch (error) {
-  //       console.error("Error accessing camera:", error);
-  //     }
-  //   };
-
-  //   startCamera();
-
-  //   return () => {
-  //     if (streamRef.current) {
-  //       streamRef.current.getTracks().forEach((track) => track.stop());
-  //     }
-  //   };
-  // }, []);
   useEffect(() => {
     const startCamera = async () => {
       try {
@@ -377,7 +309,6 @@ const Capture = ({ capturedImages, setCapturedImages, selectedFrame }) => {
           <video
             ref={videoRef}
             autoPlay
-            playsInline
             className="videoFeed"
             style={{ filter, transform: flip ? "scaleX(-1)" : "none" }}
           ></video>
@@ -403,7 +334,13 @@ const Capture = ({ capturedImages, setCapturedImages, selectedFrame }) => {
           )}
         </div>
       </div>
-
+      {capturedImages?.length &&
+        capturedImages.map((el) => (
+          <img
+            src={el}
+            style={{ width: "20px", height: "20px", imagefit: "cover" }}
+          />
+        ))}
       <div className="filterButtons">
         <button
           onClick={() => setFlip((prev) => !prev)}
