@@ -254,26 +254,17 @@ const Capture = ({ capturedImages, setCapturedImages, selectedFrame }) => {
       ctx.scale(-1, 1);
     }
 
+    // Capture image without filters
     ctx.drawImage(video, 0, 0, fixedWidth, fixedHeight);
 
     setTimeout(() => {
-      let rawImageUrl = canvas.toDataURL("image/png");
+      const imageUrl = canvas.toDataURL("image/png");
 
-      const filterCanvas = document.createElement("canvas");
-      const filterCtx = filterCanvas.getContext("2d");
-
-      filterCanvas.width = fixedWidth;
-      filterCanvas.height = fixedHeight;
-
-      let img = new Image();
-      img.src = rawImageUrl;
-      img.onload = () => {
-        filterCtx.filter = filter || "none";
-        filterCtx.drawImage(img, 0, 0, fixedWidth, fixedHeight);
-
-        const finalImageUrl = filterCanvas.toDataURL("image/png");
-        setCapturedImages((prevImages) => [...prevImages, finalImageUrl]);
-      };
+      // Store the image along with the current filter
+      setCapturedImages((prevImages) => [
+        ...prevImages,
+        { url: imageUrl, filter: filter },
+      ]);
     }, 100);
   };
 
@@ -375,13 +366,29 @@ const Capture = ({ capturedImages, setCapturedImages, selectedFrame }) => {
           )}
         </div>
       </div>
-      {capturedImages?.length &&
+      {/* {capturedImages?.length &&
         capturedImages.map((el) => (
           <img
             src={el}
             style={{ width: "20px", height: "20px", imagefit: "cover" }}
           />
+        ))} */}
+      <div className="capturedImagesContainer">
+        {capturedImages.map((img, index) => (
+          <img
+            key={index}
+            src={img.url}
+            alt="Captured"
+            style={{
+              filter: img.filter || "none",
+              width: "20px",
+              height: "20px",
+              imagefit: "cover",
+            }}
+          />
         ))}
+      </div>
+
       <div className="filterButtons">
         <button
           onClick={() => setFlip((prev) => !prev)}
